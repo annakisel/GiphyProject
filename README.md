@@ -1,4 +1,5 @@
 Task Details
+
 •	Consume the Giphy API  to fetch animated gifs that match your search query.
 
 •	Create an interface with at least one input field to be used to search for gifs by keywords.
