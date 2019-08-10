@@ -1,5 +1,5 @@
 import React from 'react';
-import fromJS, {List} from 'immutable';
+import {fromJS, List} from 'immutable';
 
 import style from './index.css';
 
@@ -13,26 +13,30 @@ class GiphyList extends React.Component {
     }
 
     handleChange = (el) => {
-        fetch(`api.giphy.com/v1/gifs/search/q=${ el.target.value }&key=Yo75O065RqJlF1cCZ12LRNMFKWC2psky`)
+        const updatedState = this.state;
+        updatedState.value = el.target.value;
+        fetch(`https://api.giphy.com/v1/gifs/search?q=${ el.target.value }&api_key=Yo75O065RqJlF1cCZ12LRNMFKWC2psky`)
             .then(response => response.json())
             .then((list) => {
-                console.log(list);
-                this.setState({
-                    // value: el.target.value,
-                    list: fromJS(list)
-                });
-        });
-        this.setState({value: el.target.value});
+                updatedState.list = fromJS(list.data.map(item => item.images.original.url));
+                this.setState({...updatedState})
+            }).catch(err => console.log(err));
     };
 
     render() {
+        const {list, value} = this.state;
         return (
             <div>
                 <form>
                     <input type="text" className={style.search} onChange={this.handleChange}
-                           value={this.state.value}/>
+                           value={value}/>
                 </form>
                 <div>{this.state.value}</div>
+                {
+                    list.map(item => {
+                        return <img key={item} src={item} alt="hello" height="300px"/>
+                    })
+                }
             </div>
         )
     }
