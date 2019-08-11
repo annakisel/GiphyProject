@@ -1,7 +1,8 @@
 import React from 'react';
 import {fromJS, List} from 'immutable';
+import Modal from 'react-modal';
 
-import style from './index.css';
+import './styles.css';
 
 class GiphyList extends React.Component {
     constructor(props) {
@@ -23,20 +24,52 @@ class GiphyList extends React.Component {
             }).catch(err => console.log(err));
     };
 
+    openModal = () => {
+        this.setState({modalIsOpen: true});
+    };
+
+    afterOpenModal = () => {
+        // references are now sync'd and can be accessed.
+        this.subtitle.style.color = '#f00';
+    };
+
+    closeModal = () => {
+        this.setState({modalIsOpen: false});
+    };
+
     render() {
         const {list, value} = this.state;
         return (
             <div>
                 <form>
-                    <input type="text" className={style.search} onChange={this.handleChange}
+                    <input type="text" className='styles' onChange={this.handleChange}
                            value={value}/>
                 </form>
                 <div>{this.state.value}</div>
                 {
                     list.map(item => {
-                        return <img key={item} src={item} alt="hello" height="300px"/>
+                        return <div key={item} onClick={this.openModal} className='gif'><img src={item} alt="hello" /></div>
                     })
                 }
+                <Modal
+                    isOpen={this.state.modalIsOpen}
+                    onAfterOpen={this.afterOpenModal}
+                    onRequestClose={this.closeModal}
+                    // style={customStyles}
+                    contentLabel="Example Modal"
+                >
+
+                    <h2 ref={subtitle => this.subtitle = subtitle}>Hello</h2>
+                    <button onClick={this.closeModal}>close</button>
+                    <div>I am a modal</div>
+                    <form>
+                        <input />
+                        <button>tab navigation</button>
+                        <button>stays</button>
+                        <button>inside</button>
+                        <button>the modal</button>
+                    </form>
+                </Modal>
             </div>
         )
     }
